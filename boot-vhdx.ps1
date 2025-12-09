@@ -10,10 +10,6 @@ param(
     [Parameter(Mandatory = $false)][switch]$RebootNow
 )
 
-#------------------------------------------------------------
-# Safety checks
-#------------------------------------------------------------
-
 function Test-Elevated{
 <#
 .SYNOPSIS
@@ -64,10 +60,6 @@ Build the VHD path in the format bcdedit expects: vhd=[C:]\path\to\file.vhdx
     Write-Host "BCD device string: $bcdVhdPath"
     return $bcdVhdPath
 }
-
-#------------------------------------------------------------
-# Check for existing BCD Entry
-#------------------------------------------------------------
 
 function Test-ExistingVhd{
 <#
@@ -157,10 +149,6 @@ configures the provided BCD entry
     Write-Host "Entry configured." -ForegroundColor Green
     Write-Host ""
 }
-
-#------------------------------------------------------------
-# Set one-time bootsequence
-#------------------------------------------------------------
 
 function Enable-BootSequence{
 <#
