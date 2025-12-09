@@ -17,7 +17,8 @@ This project provides two main tools:
 
 > ❓ Initially made this so I could install League of Legends without putting Riot Vanguard on my main windows install, and without messing with dual-boot and other weirdness, but it can easily be used for plently of other things.
 
-> 💡 For maximum isolation, encrypt all your other logical drives, storing the VHDX on it's own logical drive.
+>[!TIP]
+>For maximum isolation, encrypt all your other logical drives, storing the VHDX on it's own logical drive.
 
 ## CreateVHDX
 
