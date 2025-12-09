@@ -2,8 +2,8 @@ param(
     [string]$VhdPath = "F:\VHDX\League.vhdx",
     [int]   $VhdSizeGB = 80,
     [string]$IsoPath = "PATH TO WIN11_x64 ISO",
-    [string]$VmName = "League-VM",
-    [string]$SystemLabel = "LeagueWin"
+    [string]$SystemLabel = "LeagueWin",
+    [string]$VmName
 )
 
 function Resolve-HyperVModule {
@@ -35,7 +35,6 @@ function New-VHDAtPath {
         Write-Host "VHDX already exists at $Path"
     }
 
-    # Mount and ensure we have a single MBR+Active NTFS partition
     $disk = Mount-VHD -Path $Path -PassThru
 
     $existingPartitions = $disk | Get-Partition -ErrorAction SilentlyContinue
@@ -45,13 +44,11 @@ function New-VHDAtPath {
 
         $part = New-Partition -DiskNumber $disk.Number -UseMaximumSize -AssignDriveLetter
 
-        # Mark partition active for BIOS/Gen1 boot
         Set-Partition -DiskNumber $disk.Number -PartitionNumber $part.PartitionNumber -IsActive $true
 
         $vol = Format-Volume -Partition $part -FileSystem NTFS -NewFileSystemLabel $SystemLabel -Confirm:$false
     }
     else {
-        # Reuse existing partition/volume
         $vol = Get-Volume -DiskNumber $disk.Number | Where-Object { $_.FileSystemLabel -eq $SystemLabel } |
         Select-Object -First 1
 
@@ -91,7 +88,6 @@ function Deploy-WindowsImage {
     Write-Host "Applying Windows image from $wimPath to $WinDrive ..." -ForegroundColor Cyan
     & dism /Apply-Image /ImageFile:$wimPath /Index:1 /ApplyDir:$WinDrive
 
-    # Dismount ISO
     Dismount-DiskImage -ImagePath $IsoPath
 
     Write-Host "Image applied." -ForegroundColor Green
@@ -151,7 +147,6 @@ function New-VMFromVhd {
     # Create Gen1 VM for BIOS-style boot from MBR VHD
     $vm = New-VM -Name $VmName -MemoryStartupBytes 4GB -Generation 1 -VHDPath $VhdPath -SwitchName "Default Switch"
 
-    # Sane defaults (tweak as you like)
     Set-VMProcessor -VMName $VmName -Count 4
     Set-VMMemory    -VMName $VmName -DynamicMemoryEnabled $true -MinimumBytes 2GB -MaximumBytes 8GB
 
@@ -193,30 +188,24 @@ function Install-WingetPackagesScript {
 
 Resolve-HyperVModule
 
-# 1) Create/mount VHD and get Windows volume
 $vhInfo = New-VHDAtPath -Path $VhdPath -SizeGB $VhdSizeGB
 $winDrive = $vhInfo.WinDrive
 
-# 2) Apply Windows image from ISO to VHD
 Deploy-WindowsImage -WinDrive $winDrive -IsoPath $IsoPath
 
-# 3) Inject unattend.xml if it exists next to the script
 $unattendPath = Join-Path $PSScriptRoot "unattend.xml"
 Install-Unattend -WinDrive $winDrive -UnattendPath $unattendPath
 
-# 4) Generate winget package installer script inside the guest if winget-packages.txt exists
 $packagesPath = Join-Path $PSScriptRoot "winget-packages.txt"
 Install-WingetPackagesScript -WinDrive $winDrive -PackagesFile $packagesPath -WingetScriptTemplate (Join-Path $PSScriptRoot "winget-install.ps1")
 
-# 5) Install boot files inside the VHD
 Install-BootFilesInsideVhd -WinDrive $winDrive
 
-# 6) Dismount VHD
 Dismount-NewVhd -VhdPath $VhdPath
-
 Write-Host "VHDX prepared at $VhdPath" -ForegroundColor Green
 
-# 7) Create Hyper-V VM bound to the VHD
-New-VMFromVhd -VmName $VmName -VhdPath $VhdPath
 
-Write-Host "Done. Use: Start-VM '$VmName' to boot into Windows with unattend + winget script applied." -ForegroundColor Green
+if ($VmName) {
+    New-VMFromVhd -VmName $VmName -VhdPath $VhdPath
+    Write-Host "Done. Use: Start-VM '$VmName' to boot into Windows with unattend + winget script applied." -ForegroundColor Green
+}
