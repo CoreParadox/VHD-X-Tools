@@ -9,6 +9,7 @@ A collection of PowerShell tools for creating and booting Windows VHD/VHDX virtu
 At the very least I recommend [backing up your BCD store](https://www.tenforums.com/tutorials/163900-backup-restore-boot-configuration-data-bcd-store-windows.html) and saving it to a different drive than windows so you can boot to recovery and restore it if you need to
 
 ## Overview
+<img width="822" height="1522" alt="Untitled" src="https://github.com/user-attachments/assets/ac628441-a2ac-473e-9d37-99bebc2d6e8c" />
 
 This project provides two main tools:
 
