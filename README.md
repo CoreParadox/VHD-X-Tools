@@ -3,7 +3,8 @@
 A collection of PowerShell tools for creating and booting Windows VHD/VHDX virtual hard disks.
 
 # ⚠️⚠️⚠️ Warning ⚠️⚠️⚠️
-## This comes with no support or warranty, if you mess up your BCD Store it can be difficult to get it working again without reinstalling. Use at your own risk!
+> [!Caution]
+> **This comes with no support or warranty, if you mess up your BCD Store it can be difficult to get it working again without reinstalling. Use at your own risk**</ins>
 
 At the very least I recommend [backing up your BCD store](https://www.tenforums.com/tutorials/163900-backup-restore-boot-configuration-data-bcd-store-windows.html) and saving it to a different drive than windows so you can boot to recovery and restore it if you need to
 
@@ -73,7 +74,8 @@ Automates Windows OOBE by:
 - Enabling auto-logon
 - ~~Running winget package installation on first login~~
 
-> ⚠️Automatic winget-install currently doesn't run on first login but you can run it yourself from `C:\FirstTimeSetup\winget-install.ps1`
+> [!Note]
+> Automatic winget-install currently doesn't run on first login but you can run it yourself from `C:\FirstTimeSetup\winget-install.ps1`
 
 #### `winget-packages.txt`
 List of winget package IDs to install with winget-install.ps1 (one per line, `#` for comments):
@@ -147,14 +149,13 @@ Your default boot configuration remains unchanged. The VHDX boot entry is hidden
    .\BootVHDX\boot-vhdx.ps1 -VhdPath "F:\VHDX\Gaming.vhdx" -RebootNow
    ```
 5. **Create a Shortcut for easy access**
-   
-   5.1 Right-click > New > Shortcut
-   
-   5.2 Enter the following
-   ```ps
-    powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Start-Process powershell -Verb RunAs -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File \"G:\Util\Scripts\boot-vhdx.ps1\" -VhdPath \"F:\VHDX\League.vhdx\" -RebootNow'"
-    ```
-    ### ⚠️ Make sure to replace the file paths with yours!
+   1. Right-click > New > Shortcut
+   2. Enter the following
+      ```ps
+       powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Start-Process powershell -Verb RunAs -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File \"G:\Util\Scripts\boot-vhdx.ps1\" -VhdPath \"F:\VHDX\League.vhdx\" -RebootNow'"
+       ```
+>[!IMPORTANT]
+> 1. Make sure to replace the file paths with yours (`-File \"G:\Util\Scripts\boot-vhdx.ps1\"` `-VhdPath \"F:\VHDX\League.vhdx\"`)
+> 2. Quoting and escape sequences are important!
 
-    ### ⚠️ Quoting and escape sequences are important!
 
