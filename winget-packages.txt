@@ -1,0 +1,14 @@
+Microsoft.WindowsTerminal
+VideoLAN.VLC
+RiotGames.LeagueOfLegends.NA
+Discord.Discord
+Mozilla.Firefox
+Elgato.StreamDeck
+Elgato.WaveLink
+Blitz.Blitz
+Valve.Steam
+7zip.7zip
+Notepad++.Notepad++
+Spotify.Spotify
+Corsair.iCUE.5
+KeePassXCTeam.KeePassXC

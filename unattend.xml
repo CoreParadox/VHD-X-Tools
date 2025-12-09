@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<unattend
+  xmlns="urn:schemas-microsoft-com:unattend"
+  xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State"
+  xmlns:cpi="urn:schemas-microsoft-com:cpi">
+
+  <settings pass="oobeSystem">
+    <component
+      name="Microsoft-Windows-Shell-Setup"
+      processorArchitecture="amd64"
+      publicKeyToken="31bf3856ad364e35"
+      language="neutral"
+      versionScope="nonSxS">
+
+      <OOBE>
+        <HideEULAPage>true</HideEULAPage>
+        <HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>
+        <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+        <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+        <NetworkLocation>Work</NetworkLocation>
+        <ProtectYourPC>3</ProtectYourPC>
+        <SkipUserOOBE>true</SkipUserOOBE>
+        <SkipMachineOOBE>true</SkipMachineOOBE>
+      </OOBE>
+
+      <UserAccounts>
+        <LocalAccounts>
+          <LocalAccount wcm:action="add" wcm:keyValue="LeagueUser">
+            <Name>LeagueUser</Name>
+            <DisplayName>LeagueUser</DisplayName>
+            <Group>Administrators</Group>
+            <Password>
+              <!-- you can change this later, but it's prob not important -->
+              <Value>P@ssw0rd</Value>
+              <PlainText>true</PlainText>
+            </Password>
+          </LocalAccount>
+        </LocalAccounts>
+      </UserAccounts>
+
+      <AutoLogon>
+        <Enabled>true</Enabled>
+        <Username>LeagueUser</Username>
+        <Password>
+          <Value>League123!</Value>
+          <PlainText>true</PlainText>
+        </Password>
+        <LogonCount>999</LogonCount>
+      </AutoLogon>
+
+
+      <FirstLogonCommands>
+        <SynchronousCommand wcm:action="add" wcm:keyValue="1">
+          <Order>1</Order>
+          <Description>Install winget packages</Description>
+          <CommandLine>powershell -ExecutionPolicy Bypass -File C:/FirstTimeSetup/winget-install.ps1</CommandLine>
+        </SynchronousCommand>
+
+        <!-- Example extra command you can add later:
+        <SynchronousCommand wcm:action="add" wcm:keyValue="2">
+          <Order>2</Order>
+          <Description>Anything else</Description>
+          <CommandLine>powershell -Command "Write-Host 'Hello from unattend'"</CommandLine>
+        </SynchronousCommand>
+        -->
+      </FirstLogonCommands>
+
+    </component>
+  </settings>
+
+  <cpi:offlineImage cpi:source="wim://install.wim#Windows 11" />
+</unattend>
